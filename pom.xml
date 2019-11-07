@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>distributedsystems</groupId>
+  <artifactId>demo</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0</version>
+  <name>distributed-systems-demo</name>
+  <url>http://maven.apache.org</url>
+
+<!--    <properties>-->
+<!--        <maven.compiler.source>1.6</maven.compiler.source>-->
+<!--        <maven.compiler.target>1.6</maven.compiler.target>-->
+<!--    </properties>-->
+
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate</groupId>-->
+<!--            <artifactId>hibernate-core</artifactId>-->
+<!--            <version>5.4.4.Final</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>mysql</groupId>-->
+<!--            <artifactId>mysql-connector-java</artifactId>-->
+<!--            <version>8.0.17</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>1.6.0</version>-->
+<!--                <configuration>-->
+<!--                    <mainClass>App</mainClass>-->
+<!--                    <cleanupDaemonThreads>false</cleanupDaemonThreads>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
+
+    <licenses>
+        <license>
+            <name>GPL linking exception</name>
+            <url>
+                <!--                TODO: change it!-->
+                https://github.com/Protelis/Protelis-Parser/blob/master/LICENSE.txt
+            </url>
+        </license>
+    </licenses>
+    <!--    <name>spring</name>-->
+    <description>Distributed System M, EJB Exercise</description>
+    <developers>
+        <developer>
+            <name>Nicola Ghiselli</name>
+            <email>nicola.ghiselli@unibo.it</email>
+            <url>https://www.unibo.it/sitoweb/nicola.ghiselli/</url>
+        </developer>
+        <developer>
+            <name>Leonardo Aimi</name>
+            <email>leonardo.aimi@unibo.it</email>
+            <url>https://www.unibo.it/sitoweb/leonardo.aimi</url>
+        </developer>
+    </developers>
+</project>

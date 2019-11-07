@@ -1,0 +1,339 @@
+plugins {
+    id 'java'
+    id 'java-library'
+
+    // jboss plugin - https://github.com/wildfly/wildfly-gradle-tools
+    id 'org.wildfly.build.provision' version "0.0.11"
+
+    id 'war'
+    id 'ear'
+}
+
+def wildfly_home="/home/nghiselli/Projects/DistributedSystemsM/JBoss/wildfly-17.0.1.Final"
+
+repositories {
+    maven { url "https://repository.jboss.org/nexus/content/groups/public/" }
+    maven { url 'https://repository.jboss.org/nexus/content/groups/public-jboss' }
+    maven { url 'https://repository.jboss.org/nexus/content/repositories' }
+    maven { url 'https://repository.jboss.org/nexus/content/repositories/thirdparty-releases' }
+
+    maven { url 'https://mvnrepository.com/artifact/org.hibernate/hibernate'}
+
+    mavenLocal()
+    mavenCentral()
+
+    jcenter()
+}
+
+dependencies {
+
+    // EJB -----------------------------------------------------------------------------------------------------
+
+    // https://mvnrepository.com/artifact/javax.persistence/persistence-api
+    compile group: 'javax.persistence', name: 'persistence-api', version: '1.0'
+    // https://mvnrepository.com/artifact/javax.ejb/javax.ejb-api
+    compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+    // https://mvnrepository.com/artifact/javax.interceptor/javax.interceptor-api
+    compile group: 'javax.interceptor', name: 'javax.interceptor-api', version: '1.2.2'
+    // https://mvnrepository.com/artifact/javax.jms/javax.jms-api
+    compile group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
+    // https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+
+    //JBOSS -----------------------------------------------------------------------------------------------------
+    compile 'org.wildfly:wildfly-spec-api:17.0.0.Final'
+
+    // https://mvnrepository.com/artifact/jboss/jboss-system
+    compile group: 'jboss', name: 'jboss-system', version: '4.2.2.GA'
+
+    // https://mvnrepository.com/artifact/org.jboss/jboss-common-core
+    compile group: 'org.jboss', name: 'jboss-common-core', version: '2.5.0.Final'
+    // https://mvnrepository.com/artifact/org.jboss/jboss-vfs
+    compile group: 'org.jboss', name: 'jboss-vfs', version: '3.2.14.Final'
+    // https://mvnrepository.com/artifact/org.jboss.ejb3/jboss-ejb3-ext-api
+    compile group: 'org.jboss.ejb3', name: 'jboss-ejb3-ext-api', version: '2.3.0.Final'
+
+
+    // EAR ------------------------------------------------------------------------------------------------------
+    // The following dependencies will include the war and jar files, that will be placed in the ear root
+    deploy files(war)
+    deploy files(jar)
+
+    // The following dependencies will become ear libs and will be placed in a dir configured via the libDirName property
+    earlib group: 'log4j', name: 'log4j', version: '1.2.15', ext: 'jar'
+
+
+    // HIBERNATE ------------------------------------------------------------------------------------------------
+
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-gradle-plugin
+    compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.4.5.Final'
+    // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.0.17.Final'
+
+    // https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.2.Final' // --> Entity Manager - persistence.xml
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.5.Final'
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.4.5.Final' // --> Entity Manager - persistence.xml --> moved to hibernate core!
+
+
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    // to use the correct dialect
+    runtime 'mysql:mysql-connector-java:8.0.17'
+
+    // LOGGING
+    // https://mvnrepository.com/artifact/log4j/log4j
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+
+    // JNDI ----------------------------------------------------------------------------------------------------
+
+    // https://mvnrepository.com/artifact/org.jboss.naming/jnpserver
+    testCompile group: 'org.jboss.naming', name: 'jnpserver', version: '5.0.5.Final'
+    // https://mvnrepository.com/artifact/org.jboss.naming/jboss-naming-build
+    compile group: 'org.jboss.naming', name: 'jboss-naming-build', version: '5.0.5.Final'
+    // https://mvnrepository.com/artifact/org.jboss.naming/jnp-client
+    compile group: 'org.jboss.naming', name: 'jnp-client', version: '5.0.5.Final'
+
+
+
+
+    // TESTS ----------------------------------------------------------------------------------------------------
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task deployEar( ){
+
+    println("running dependencies.....")
+    dependsOn('ear')
+
+    println("dependencies resolved.....")
+
+    println("deployin war package.....")
+
+    println("deleting old deployments.....")
+    delete("$wildfly_home/standalone/deployments/distributed-systems-demo.ear")
+    println("old depployments deleted.....")
+
+    copy(){
+        from "$buildDir/libs/distributed-systems-demo.ear"
+        into "$wildfly_home/standalone/deployments/"
+    }
+
+    println("Application deployed!")
+}
+
+task testintellijcommit(){
+
+    println("works!")
+}
+
+
+// WAR SECTION ---------------------------------------------------------------------------------
+task prepareWar(){
+
+//    dependsOn('clean')
+//    dependsOn('build')
+
+    doLast {
+        println("Preparing WAR file...")
+
+        //PAGES
+        copy {
+            from "$projectDir/src/main/webapp/index.jsp"
+            into "$buildDir/tmp/war"
+        }
+
+        //WEB.XML
+        copy {
+            from "$projectDir/src/main/webapp/WEB-INF/web.xml"
+            into "$buildDir/tmp/war/WEB-INF/"
+        }
+
+        /*
+        // HIBERNATE.CFG.XML
+        copy {
+            from "$projectDir/src/main/java/hibernate.cfg.xml"
+            into "$buildDir/tmp/war/WEB-INF/"
+        }
+        */
+
+        //CLASSES
+        copy {
+            from "$buildDir/classes/java/main/"
+            into "$buildDir/tmp/war/WEB-INF/classes/"
+        }
+
+        //EVENTUALLY - LIBS
+//    copy {
+//        from "$buildDir/libs("
+//        into "$buildDir/tmp/war/WEB-INF/libs"
+//    }
+
+        //EVENTUALLY - TAGS
+//    copy {
+//        from "$buildDir/tags"
+//        into "$buildDir/tmp/war/WEB-INF/tags"
+//    }
+    }
+}
+
+war {
+
+//   dependsOn('prepareWar')
+
+    from 'src/webapp' // adds a file-set to the root of the archive
+    //from 'tmp/war'
+    include "*.cfg.xml"
+    include "*.jsp"
+}
+
+
+// EAR SECTION ---------------------------------------------------------------------------------
+
+task prepareEar(){
+
+//    dependsOn('clean')
+//    dependsOn('build')
+//    dependsOn('prepareWar')
+//    dependsOn('war')
+
+    doLast {
+        println("Preparing EAR file...")
+
+        // META-INF
+//        copy {
+//            from "$buildDir/tmp/ear/application.xml"
+//            into "$buildDir/tmp/ear/META-INF"
+//        }
+        copy {
+            from "$projectDir/settings/application.xml"
+            into "$buildDir/tmp/ear/MATA-INF/"
+        }
+
+        /*
+        copy {
+            from "$projectDir/settings/jboss-app.xml"
+            into "$buildDir/tmp/ear/MATA-INF/"
+        }
+        */
+
+        //delete "$buildDir/tmp/ear/application.xml"
+
+        // WAR
+        copy {
+            from "$buildDir/libs/distributed-systems-demo.war"
+            into "$buildDir/tmp/ear"
+        }
+
+        // JAR
+//        copy {
+//            from "$buildDir/libs/distributed-systems-demo.war"
+//            into "$buildDir/tmp/ear"
+//        }
+
+        //EVENTUALLY - LIBS
+//    copy {
+//        from "$buildDir/libs("
+//        into "$buildDir/tmp/war/WEB-INF/libs"
+//    }
+
+        //TODO: remember that this must be consistent with the application.xml file!
+    }
+
+}
+
+ear {
+
+    //dependsOn('war')
+
+//     The Ear plugin adds two dependency configurations: deploy and earlib.
+//     All dependencies in the deploy configuration are placed in the root of the EAR archive, and are not transitive.
+//     All dependencies in the earlib configuration are placed in the 'lib' directory in the EAR archive and are transitive.
+//
+
+    includeEmptyDirs=false
+//    from "$buildDir/libs" -> !!!!! WARNING CAUSES A LOOOP !!!!!
+
+    appDirName 'src/main/application'  // use application metadata found in this folder
+    // put dependent libraries into APP-INF/lib inside the generated EAR
+    libDirName 'lib'
+    deploymentDescriptor {  // custom entries for application.xml:
+//      fileName = "application.xml"  // same as the default value
+//      version = "6"  // same as the default value
+        applicationName = "distributed-systems-demo"
+        initializeInOrder = true
+        displayName = "distributed-systems-demo"  // defaults to project.name
+        // defaults to project.description if not set
+        description = "My customized EAR for the Gradle documentation"
+//      libraryDirectory = "APP-INF/lib"  // not needed, above libDirName setting does this
+//      module("my.jar", "java")  // won't deploy as my.jar isn't deploy dependency
+//      webModule("$buildDir/libs/distributed-systems-demo.war", "/")  // won't deploy as my.war isn't deploy dependency
+
+//        securityRole "jboss"
+//        securityRole "admin"
+//        securityRole "superadmin"
+
+//        withXml { provider -> // add a custom node to the XML
+//            provider.asNode().appendNode("data-source", "my/data/source")
+//        }
+    }
+}
+
+
+// TESTS SECTION -------------------------------------------------------------------------------
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}
+
+// JBOSS SECTION -------------------------------------------------------------------------------
+
+// The provision task will download and install a WildFly server to the target directory,
+// while upgrading the two Hibernate ORM libraries and replacing the JPA 2.1 API with the standard JPA 2.2 API.
+//provision {
+//    //Optional provisioning configuration:
+//    //configuration = "./settings/custom-server-provisioning.xml"
+//
+//    //You can set variables to be injected in the provisioning.xml configuration;
+//    //The 'wildfly.version' variable is required by the default configuration:
+//    variables['wildfly.version'] = '17.0.0.Final'
+//
+//    //The default is to add jboss-nexus automatically as you'll likely need it,
+//    //yet most builds will want to control such details explicitly.
+//    autoAddRepositories = false
+//
+//    //Optional destination directory:
+//    destinationDir = file("./settings/light-wildfly")
+//    //Overrides the version of an artifact:
+//    override( 'org.hibernate:hibernate-core' ) {
+//        version = '5.3.0.Beta1'
+//    }
+//    override( 'org.hibernate:hibernate-envers' ) {
+//        version = '5.3.0.Beta1'
+//    }
+//    //Overrides version, group, etc.. :
+////    override( 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api' ) {
+////        groupId = 'javax.persistence'
+////        artifactId = 'javax.persistence-api'
+////        version = '2.2'
+////    }
+//}
+
+task launch_jboss(){
+
+    doLast {
+        println("Launcing JBoss...")
+
+        def sout = new StringBuilder(), serr = new StringBuilder()
+        def proc = "$wildfly_home/bin/standalone.sh".execute()
+        proc.outputStream.close()
+        proc.inputStream.eachLine {println it}
+        proc.waitFor()
+        println "out> $sout err> $serr"
+    }
+}
+
+//--------------------------------------------------------------------------------------------

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <persistence-unit name="distributed-systems-demo" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<!--        <jta-data-source>java:/DefaultDS</jta-data-source>-->
+<!--        <mapping-file>META-INF/orm.xml</mapping-file>-->
+<!--        <jar-file></jar-file>-->
+        <class>it.distributedsystems.model.dao.Product</class>
+        <class>it.distributedsystems.model.dao.Purchase</class>
+        <class>it.distributedsystems.model.dao.Producer</class>
+        <class>it.distributedsystems.model.dao.Customer</class>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <validation-mode>CALLBACK</validation-mode>
+        <properties>
+            <!-- DB information -->
+            <property name="connection.url" value="jdbc:mysql://137.204.57.168:3306/test"/>
+            <property name="connection.username" value="root"/>
+            <property name="connection.password" value="sdm"/>
+
+            <!--    <property name="connection.driver_class" value="com.mysql.jdbc.Driver"/>-->
+            <property name="connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <!--    <property name="dialect" value="org.hibernate.dialect.MySQL8DialectDialect"/>-->
+            <property name="dialect" value="org.hibernate.dialect.MySQL57Dialect"/>
+
+            <property name="show_sql" value="true"/>
+            <property name="format_sql" value="true"/>
+            <property name="hbm2ddl.auto" value="create-drop"/>
+
+            <!-- JDBC connection pool (use the built-in) -->
+            <property name="connection.pool_size" value="10"/>
+            <property name="current_session_context_class" value="thread"/>
+        </properties>
+    </persistence-unit>
+</persistence>

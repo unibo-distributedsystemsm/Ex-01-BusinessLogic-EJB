@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+
+ <session-factory>
+
+     <!-- DB information -->
+    <property name="connection.url">jdbc:mysql://137.204.57.168:3306/test</property>
+    <property name="connection.username">root</property>
+    <property name="connection.password">sdm</property>
+
+<!--    <property name="connection.driver_class">com.mysql.jdbc.Driver</property> -->
+     <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+<!--    <property name="dialect">org.hibernate.dialect.MySQL8DialectDialect</property> -->
+     <property name="dialect">org.hibernate.dialect.MySQL57Dialect</property>
+  
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
+    <property name="hbm2ddl.auto">create</property>
+  
+    <!-- JDBC connection pool (use the built-in) -->
+    <property name="connection.pool_size">10</property>
+    <property name="current_session_context_class">thread</property>
+
+     <mapping class="it.distributedsystems.model.ejb.Employee" />
+     <mapping class="it.distributedsystems.model.ejb.Department" />
+
+     <mapping class="it.distributedsystems.model.dao.Customer" />
+     <mapping class="it.distributedsystems.model.dao.Producer" />
+     <mapping class="it.distributedsystems.model.dao.Product" />
+     <mapping class="it.distributedsystems.model.dao.Purchase" />
+ 
+ </session-factory>
+</hibernate-configuration>
