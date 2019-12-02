@@ -6,7 +6,8 @@
 
  <session-factory>
 
-     <!-- DB information -->
+	<!-- DB information -->
+	<!-- il DB test è un database lasciato in concessione per un prima inizializzazione delle esercitazioni. Comunque non ne è garantita la stabilità, quindi si consiglia di fare il deployment locale sulle vostre macchine di un'altra istanza -->
     <property name="connection.url">jdbc:mysql://137.204.57.168:3306/test</property>
     <property name="connection.username">root</property>
     <property name="connection.password">sdm</property>
